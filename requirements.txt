@@ -4,4 +4,3 @@ matplotlib
 streamlit
 pillow
 cryptography
-git+https://github.com/gsurma/stepic.git
