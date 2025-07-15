@@ -1,5 +1,6 @@
-numpy
-scikit-image
-matplotlib
 streamlit
 pillow
+cryptography
+numpy
+matplotlib
+scikit-image
