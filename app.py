@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import io
 import hashlib
 import base64
-import stepic
+import stepic  # This is your custom stepic.py
 
 def generate_key(passkey: str):
     hash_key = hashlib.sha256(passkey.encode()).digest()
@@ -26,7 +26,7 @@ def decrypt_text(encrypted_text: str, passkey: str):
     return decrypted_text.decode()
 
 def encode_text_in_image(image, text):
-    return stepic.encode(image, text.encode())
+    return stepic.encode(image, text)  # Pass str, stepic will convert to bytes
 
 def decode_text_from_image(image):
     return stepic.decode(image)
@@ -71,7 +71,7 @@ st.title("Steganography & Cryptography App")
 uploaded_image = st.file_uploader("Choose an image...", type=["png", "jpg", "jpeg"])
 
 if uploaded_image:
-    image = Image.open(uploaded_image)
+    image = Image.open(uploaded_image).convert("RGB")
     st.image(image, caption='Uploaded Image.', use_column_width=True)
     option = st.selectbox("Choose Operation", ["Encrypt Text in Image", "Decrypt Text from Image"])
 
@@ -88,17 +88,14 @@ if uploaded_image:
                     img_bytes = io.BytesIO()
                     encoded_image.save(img_bytes, format='PNG')
                     st.download_button("Download Image", data=img_bytes.getvalue(), file_name="encoded_image.png")
-                    psnr_value = calculate_psnr(image, encoded_image)
-                    mse_value = calculate_mse(image, encoded_image)
-                    ssim_value = calculate_ssim(image, encoded_image)
-                    ncc_value = calculate_ncc(image, encoded_image)
-                    ber_value = calculate_ber(image, encoded_image)
-                    st.write(f"**Image Quality Analysis**")
-                    st.write(f"PSNR: {psnr_value:.2f} dB")
-                    st.write(f"MSE: {mse_value:.2f}")
-                    st.write(f"SSIM: {ssim_value:.4f}")
-                    st.write(f"NCC: {ncc_value:.4f}")
-                    st.write(f"BER: {ber_value:.4f}")
+                    
+                    st.write("**Image Quality Analysis**")
+                    st.write(f"PSNR: {calculate_psnr(image, encoded_image):.2f} dB")
+                    st.write(f"MSE: {calculate_mse(image, encoded_image):.2f}")
+                    st.write(f"SSIM: {calculate_ssim(image, encoded_image):.4f}")
+                    st.write(f"NCC: {calculate_ncc(image, encoded_image):.4f}")
+                    st.write(f"BER: {calculate_ber(image, encoded_image):.4f}")
+                    
                     st.write("**Histogram Analysis**")
                     plot_histograms(image, encoded_image)
                 except Exception as e:
@@ -113,4 +110,4 @@ if uploaded_image:
                 decrypted_text = decrypt_text(hidden_text, passkey)
                 st.write(f"Decrypted Text: {decrypted_text}")
             except Exception as e:
-                st.error(f"Incorrect Pass Key {e}")
+                st.error(f"Incorrect Pass Key or Corrupt Image: {e}")
