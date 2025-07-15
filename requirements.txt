@@ -1,7 +1,7 @@
+numpy
+scikit-image
+matplotlib
 streamlit
 pillow
 cryptography
-scikit-image
-matplotlib
 git+https://github.com/gsurma/stepic.git
-
